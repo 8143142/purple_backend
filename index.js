@@ -12,7 +12,7 @@ import { handleValidationErrors, checkAuth } from './utils/index.js';
 import { UserController, PostController } from './controllers/index.js';
 
 mongoose
-  .connect("mongodb+srv://admin:qwerty123@cluster0.pekgu1b.mongodb.net/blog?retryWrites=true&w=majority&appName=Cluster0")
+  .connect(process.env.MONGODB_CONNECT_URI)
   .then(() => console.log('DB ok'))
   .catch((err) => console.log('DB error', err));
 
@@ -33,7 +33,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin:["http://localhost:4444", "https://purple-frontend.onrender.com"]
+}));
 app.use('/uploads', express.static('uploads'));
 
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
